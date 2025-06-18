@@ -1,0 +1,423 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth Models
+model Account {
+  id     String @id @default(cuid())
+  userId String
+  name   String
+  slug   String
+
+  users User[]
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  role          String? // Campo opcional para roles básicos del sistema
+  emailVerified DateTime?
+  image         String?
+  password      String? // Para autenticación con email/password
+  isTemporary   Boolean   @default(false) // Indica si el usuario es temporal
+
+  // Contact Information
+  phone   String?
+  address String?
+  city    String?
+  state   String?
+  country String?
+  zipCode String?
+
+  // Additional Information
+  documentType   String? // DNI, RUC, etc.
+  documentNumber String?
+  birthDate      DateTime?
+
+  // Relations
+  accounts         Account[] // NextAuth accounts
+  sessions         Session[]
+  orders           Order[] // Orders made by the user
+  reviews          Review[]
+  businessAccounts BusinessAccount[] // Business accounts
+  news             News[]
+  pages            Page[]
+  addresses        Address[] // Multiple shipping addresses
+  accountRoles     accountRole[] // Roles in different accounts
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Business Account Model
+model BusinessAccount {
+  id          String        @id @default(cuid())
+  name        String
+  slug        String        @unique
+  description String?       @db.Text
+  logo        String?
+  banner      String?
+  status      accountStatus @default(PENDING)
+  enabled     Boolean       @default(true)
+  domain      String?       @unique
+  config      Json? // Para configuraciones personalizadas de la tienda
+
+  // Business Information
+  phone   String?
+  email   String?
+  address String?
+  city    String?
+  state   String?
+  country String?
+  zipCode String?
+
+  // Relations
+  owner      User          @relation(fields: [ownerId], references: [id])
+  ownerId    String
+  products   Product[]
+  categories Category[]
+  users      accountRole[] // Users with roles in this account
+  orders     Order[] // Orders from this account
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([ownerId])
+}
+
+// account Role System
+model accountRole {
+  id        String          @id @default(cuid())
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  account   BusinessAccount @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  accountId String
+  role      Role            @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId    String
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@unique([userId, accountId])
+  @@index([userId])
+  @@index([accountId])
+  @@index([roleId])
+}
+
+model Role {
+  id           String        @id @default(cuid())
+  name         String        @unique
+  description  String?
+  permissions  Permission[] // Permisos específicos para este rol
+  accountRoles accountRole[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Permission {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  roles       Role[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+// Product Models
+model Product {
+  id          String          @id @default(cuid())
+  name        String
+  slug        String          @unique
+  description String          @db.Text
+  price       Float
+  stock       Int
+  enabled     Boolean         @default(true)
+  images      Image[]
+  category    Category        @relation(fields: [categoryId], references: [id])
+  categoryId  String
+  account     BusinessAccount @relation(fields: [accountId], references: [id])
+  accountId   String
+  variants    Variant[]
+  reviews     Review[]
+  orderItems  OrderItem[]
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([categoryId])
+  @@index([accountId])
+}
+
+model Variant {
+  id        String   @id @default(cuid())
+  name      String
+  price     Float
+  stock     Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  options   Option[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+}
+
+model Option {
+  id        String   @id @default(cuid())
+  name      String
+  value     String
+  variant   Variant  @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  variantId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([variantId])
+}
+
+model Category {
+  id          String          @id @default(cuid())
+  name        String
+  slug        String          @unique
+  description String?         @db.Text
+  products    Product[]
+  parent      Category?       @relation("SubCategories", fields: [parentId], references: [id])
+  parentId    String?
+  children    Category[]      @relation("SubCategories")
+  account     BusinessAccount @relation(fields: [accountId], references: [id])
+  accountId   String
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([parentId])
+  @@index([accountId])
+}
+
+// Order Models
+model Order {
+  id        String          @id @default(cuid())
+  user      User            @relation(fields: [userId], references: [id])
+  userId    String
+  account   BusinessAccount @relation(fields: [accountId], references: [id])
+  accountId String
+  items     OrderItem[]
+  status    OrderStatus     @default(PENDING)
+  total     Float
+  payment   Payment?
+  shipping  Shipping?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+
+  @@index([userId])
+  @@index([accountId])
+}
+
+model OrderItem {
+  id        String   @id @default(cuid())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  product   Product  @relation(fields: [productId], references: [id])
+  productId String
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+// Payment Models
+model Payment {
+  id         String        @id @default(cuid())
+  order      Order         @relation(fields: [orderId], references: [id])
+  orderId    String        @unique
+  amount     Float
+  status     PaymentStatus @default(PENDING)
+  provider   String
+  providerId String?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
+
+  @@index([orderId])
+}
+
+// Shipping Models
+model Shipping {
+  id             String         @id @default(cuid())
+  order          Order          @relation(fields: [orderId], references: [id])
+  orderId        String         @unique
+  address        Address        @relation(fields: [addressId], references: [id])
+  addressId      String
+  status         ShippingStatus @default(PENDING)
+  trackingNumber String?
+  carrier        String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([orderId])
+  @@index([addressId])
+}
+
+// Review Models
+model Review {
+  id        String   @id @default(cuid())
+  rating    Int
+  comment   String   @db.Text
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@index([productId])
+}
+
+// Media Models
+model Image {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String?
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+}
+
+// News Models
+model News {
+  id          String      @id @default(cuid())
+  title       String
+  slug        String      @unique
+  content     String      @db.Text
+  excerpt     String?     @db.Text
+  published   Boolean     @default(false)
+  publishedAt DateTime?
+  author      User        @relation(fields: [authorId], references: [id])
+  authorId    String
+  images      NewsImage[]
+  tags        Tag[]
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  @@index([authorId])
+}
+
+model NewsImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String?
+  news      News     @relation(fields: [newsId], references: [id], onDelete: Cascade)
+  newsId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([newsId])
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  slug      String   @unique
+  news      News[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Page Models
+model Page {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  content     String    @db.Text
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  author      User      @relation(fields: [authorId], references: [id])
+  authorId    String
+  template    String    @default("default")
+  metadata    Json?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([authorId])
+}
+
+// Multiple Shipping Addresses
+model Address {
+  id        String     @id @default(cuid())
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  name      String // Name for the address (e.g., "Home", "Work")
+  firstName String
+  lastName  String
+  address   String
+  city      String
+  state     String
+  country   String
+  zipCode   String
+  phone     String
+  isDefault Boolean    @default(false)
+  shippings Shipping[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  @@index([userId])
+}
+
+// Enums
+enum accountStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  CLOSED
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum ShippingStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
