@@ -1,20 +1,16 @@
-'use client';
-
-import { useState } from 'react';
-import Link from 'next/link';
+import Link from "next/link";
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState([
+  const products = [
     {
       id: 1,
-      name: 'Producto 1',
+      name: "Producto 1",
       price: 19990,
       stock: 10,
-      status: 'active',
-      image: '/product1.jpg',
+      status: "active",
+      image: "/product1.jpg",
     },
-    // Agrega más productos de ejemplo aquí
-  ]);
+  ];
 
   return (
     <div className="space-y-6">
@@ -24,8 +20,18 @@ export default function ProductsPage() {
           href="/company/products/new"
           className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
         >
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
+          <svg
+            className="w-5 h-5 mr-2"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M12 4v16m8-8H4"
+            ></path>
           </svg>
           Nuevo Producto
         </Link>
@@ -35,7 +41,10 @@ export default function ProductsPage() {
       <div className="bg-white p-4 rounded-lg shadow">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           <div>
-            <label htmlFor="search" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="search"
+              className="block text-sm font-medium text-gray-700"
+            >
               Buscar
             </label>
             <input
@@ -46,7 +55,10 @@ export default function ProductsPage() {
             />
           </div>
           <div>
-            <label htmlFor="category" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="category"
+              className="block text-sm font-medium text-gray-700"
+            >
               Categoría
             </label>
             <select
@@ -60,7 +72,10 @@ export default function ProductsPage() {
             </select>
           </div>
           <div>
-            <label htmlFor="status" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="status"
+              className="block text-sm font-medium text-gray-700"
+            >
               Estado
             </label>
             <select
@@ -74,7 +89,10 @@ export default function ProductsPage() {
             </select>
           </div>
           <div>
-            <label htmlFor="sort" className="block text-sm font-medium text-gray-700">
+            <label
+              htmlFor="sort"
+              className="block text-sm font-medium text-gray-700"
+            >
               Ordenar por
             </label>
             <select
@@ -95,19 +113,34 @@ export default function ProductsPage() {
         <table className="min-w-full divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
                 Producto
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
                 Precio
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
                 Stock
               </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                scope="col"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
                 Estado
               </th>
-              <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th
+                scope="col"
+                className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
                 Acciones
               </th>
             </tr>
@@ -125,25 +158,35 @@ export default function ProductsPage() {
                       />
                     </div>
                     <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {product.name}
+                      </div>
                     </div>
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">${product.price.toLocaleString()}</div>
+                  <div className="text-sm text-gray-900">
+                    ${product.price.toLocaleString()}
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">{product.stock}</div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                    product.status === 'active'
-                      ? 'bg-green-100 text-green-800'
-                      : product.status === 'inactive'
-                      ? 'bg-red-100 text-red-800'
-                      : 'bg-gray-100 text-gray-800'
-                  }`}>
-                    {product.status === 'active' ? 'Activo' : product.status === 'inactive' ? 'Inactivo' : 'Borrador'}
+                  <span
+                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
+                      product.status === "active"
+                        ? "bg-green-100 text-green-800"
+                        : product.status === "inactive"
+                        ? "bg-red-100 text-red-800"
+                        : "bg-gray-100 text-gray-800"
+                    }`}
+                  >
+                    {product.status === "active"
+                      ? "Activo"
+                      : product.status === "inactive"
+                      ? "Inactivo"
+                      : "Borrador"}
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -181,16 +224,30 @@ export default function ProductsPage() {
         <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
           <div>
             <p className="text-sm text-gray-700">
-              Mostrando <span className="font-medium">1</span> a <span className="font-medium">10</span> de{' '}
+              Mostrando <span className="font-medium">1</span> a{" "}
+              <span className="font-medium">10</span> de{" "}
               <span className="font-medium">20</span> resultados
             </p>
           </div>
           <div>
-            <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+            <nav
+              className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px"
+              aria-label="Pagination"
+            >
               <button className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                 <span className="sr-only">Anterior</span>
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7"></path>
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M15 19l-7-7 7-7"
+                  ></path>
                 </svg>
               </button>
               <button className="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
@@ -201,8 +258,18 @@ export default function ProductsPage() {
               </button>
               <button className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
                 <span className="sr-only">Siguiente</span>
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7"></path>
+                <svg
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  ></path>
                 </svg>
               </button>
             </nav>
@@ -211,4 +278,4 @@ export default function ProductsPage() {
       </div>
     </div>
   );
-} 
+}

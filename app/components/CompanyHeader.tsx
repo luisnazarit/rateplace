@@ -8,7 +8,6 @@ export default async function CompanyHeader() {
 
   return (
     <header className="border-b border-gray-800">
-      <pre>{JSON.stringify(session)}</pre>
       <div className="flex items-center justify-end h-16 px-4">
         <div className="flex items-center space-x-4">
           <button className="p-2 rounded-lg hover:bg-gray-100">
@@ -25,7 +24,7 @@ export default async function CompanyHeader() {
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-xs font-bold text-gray-600">
-                  {user.name ? user.name[0] : "?"}
+                  {user.name}
                 </div>
               )}
               <div className="flex flex-col items-start">

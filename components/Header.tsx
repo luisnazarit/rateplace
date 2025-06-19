@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import LoggedItem from "./LoggedItem";
-import { Badge } from "./commons/Badge";
 import MainMenu from "./MainMenu";
 import Link from "next/link";
 
