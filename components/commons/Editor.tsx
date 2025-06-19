@@ -64,7 +64,7 @@ const Editor = forwardRef(
         theme: "snow",
       });
 
-      quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+      quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node) => {
         const plainText = node.textContent || "";
         return new Quill.imports.delta().insert(plainText);
       });
