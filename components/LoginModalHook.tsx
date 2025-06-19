@@ -5,12 +5,10 @@ import React, { useEffect, useState } from "react";
 
 import { Card } from "./commons/ui/Card";
 import WrapperModal from "./WrapperModal";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import LoginModal from "./session/LoginModal";
 
-const ModalClient = dynamic(() => import('./commons/Modal'), { ssr: false });
-
-
+const ModalClient = dynamic(() => import("./commons/Modal"), { ssr: false });
 
 export default function LoginModalHook() {
   const searchParams = useSearchParams();
@@ -24,9 +22,12 @@ export default function LoginModalHook() {
   }, [param]);
 
   return (
-    <ModalClient open={open} onClose={() => {
-      setOpen(false);
-    }}>
+    <ModalClient
+      open={open}
+      onClose={() => {
+        setOpen(false);
+      }}
+    >
       <WrapperModal
         title="Iniciar sesión"
         closeButton={() => {
