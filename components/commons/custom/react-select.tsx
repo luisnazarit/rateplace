@@ -1,5 +1,3 @@
-import { color } from "framer-motion";
-
 export const customStyles = (isInvalid?: boolean) => ({
   placeholder: (provided: any) => ({
     ...provided,

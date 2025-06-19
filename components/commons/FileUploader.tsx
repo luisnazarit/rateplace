@@ -1,9 +1,9 @@
 import React, { useState, useId } from "react";
-import { FaRegTrashAlt } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 import { formatBytes } from "@/utils/utils";
 import Button from "./Button";
+import { Trash2 } from "lucide-react";
 
 interface Props {
   className?: string;
@@ -157,7 +157,7 @@ const FileUploader = ({
           <img className="rounded bg-gray-400" src={value} alt="Preview" />
           <div className="absolute top-2 right-2">
             <Button color="error" isIcon onClick={handleFileRemove}>
-              <FaRegTrashAlt />
+              <Trash2 />
             </Button>
           </div>
         </div>
@@ -211,13 +211,13 @@ const FileUploader = ({
 
           <div className="absolute top-2 right-2">
             <Button isIcon color="error" onClick={handleFileRemove}>
-              <FaRegTrashAlt />
+              <Trash2 />
             </Button>
           </div>
         </div>
       )}
       {hint && <small className="text-gray-400">{hint}</small>}
-      {hintError && <small className="text-red-500">{hintError}</small>}
+      {isInvalid && hintError && <small className="text-red-500">{hintError}</small>}
     </div>
   );
 };
