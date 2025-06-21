@@ -2,6 +2,7 @@ import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import "dayjs/locale/es";
 import sanitize from "sanitize-html";
+import bcrypt from "bcrypt";
 
 dayjs.extend(relativeTime);
 dayjs.locale("es");
@@ -215,4 +216,24 @@ export function stripHtmlAndTruncate(html: string, maxLength: number): string {
 
 export function description(description: string, size = 50) {
   return stripHtmlAndTruncate(sanitize(description), size);
+}
+
+/**
+ * Hashea una contraseña usando bcrypt
+ * @param password Contraseña en texto plano
+ * @returns Hash de la contraseña
+ */
+export async function hashPassword(password: string): Promise<string> {
+  const saltRounds = 10;
+  return await bcrypt.hash(password, saltRounds);
+}
+
+/**
+ * Compara una contraseña en texto plano con un hash
+ * @param password Contraseña en texto plano
+ * @param hash Hash de la contraseña
+ * @returns true si coinciden, false si no
+ */
+export async function comparePassword(password: string, hash: string): Promise<boolean> {
+  return await bcrypt.compare(password, hash);
 }

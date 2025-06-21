@@ -5,7 +5,7 @@ import { getTenantClient } from "@/utils/getTenantClient";
 export function GoogleLogin() {
   return (
     <button
-      className="flex gap-2 items-center"
+      className="flex gap-2 items-center bg-slate-700 w-full p-2 rounded-md"
       onClick={() => {
         const tenant = getTenantClient();
         const callbackUrl = tenant

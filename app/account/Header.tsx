@@ -1,12 +1,13 @@
 import { auth } from "@/auth";
 import Link from "next/link";
-import { Button } from "./ui/Button";
+import { Button } from "../components/ui/Button";
 
 export async function Header() {
   const session = await auth();
 
   return (
     <header className="bg-gradient-to-r from-blue-950 to-purple-900 text-white">
+      <pre>{JSON.stringify(session)}</pre>
       <div className="container mx-auto px-4 py-4">
         <div className="flex justify-between items-center">
           <Link href="/" className="text-2xl font-bold">

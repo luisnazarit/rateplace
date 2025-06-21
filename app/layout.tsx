@@ -1,21 +1,25 @@
-import { Jost, Edu_AU_VIC_WA_NT_Hand } from "next/font/google";
+import { Jost } from "next/font/google";
 import SessionProvider from "./components/SessionProvider";
 import "./globals.css";
 import { auth } from "@/auth";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { headers } from "next/headers";
+import MainLayout from "./main/layout";
+import AccountLayout from "./account/layout";
 
-const jost = Jost({ 
+const jost = Jost({
   subsets: ["latin"],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-jost',
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-jost",
 });
 
-const eduHand = Edu_AU_VIC_WA_NT_Hand({
-  subsets: ["latin"],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-edu-hand',
-});
+const MAIN_DOMAINS = [
+  "rateplace.cl",
+  "www.rateplace.cl",
+  "localhost",
+  "127.0.0.1",
+];
 
 export const metadata = {
   title: "Rate Place - Califica tus lugares favoritos",
@@ -27,16 +31,24 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const headersList = await headers();
+  const host = headersList.get("host") || "";
+  const hostname = host.split(":")[0];
+  const isMainDomain = MAIN_DOMAINS.includes(hostname);
   const session = await auth();
 
   return (
-    <html lang="es" className="dark">
-      <body className={`${jost.className} ${eduHand.variable} bg-gray-900 text-gray-100`}>
+    <html lang="es" className={`${jost.variable}`}>
+      <body style={{ fontFamily: "var(--font-jost), sans-serif" }}>
         <SessionProvider session={session}>
-          <ToastContainer position="top-right" autoClose={2000} />
-          <main className="min-h-screen bg-gray-900">
-            {children}
-          </main>
+          <ToastContainer />
+          {isMainDomain ? (
+            <MainLayout>{children}</MainLayout>
+          ) : (
+            <AccountLayout>
+              {children}
+            </AccountLayout>
+          )}
         </SessionProvider>
       </body>
     </html>

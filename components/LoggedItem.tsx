@@ -24,7 +24,7 @@ export default function LoggedItem({ session }: Props) {
       </div>
     );
   return (
-    <Button color="primary" href="/login/client">
+    <Button color="primary" href="/login">
       Login
     </Button>
   );

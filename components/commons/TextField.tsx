@@ -37,7 +37,7 @@ export default function TextField(props: Props) {
     <div className={className}>
       {label && (
         <label
-          className={`block text-sm mb-1 ${disabled ? "text-gray-500" : ""}`}
+          className={`block text-sm mb-1 ${disabled ? "text-gray-500" : "text-slate-300"}`}
           htmlFor={id}
         >
           {label} {args.required && <span className="text-red-500">*</span>}
@@ -50,7 +50,7 @@ export default function TextField(props: Props) {
           isInvalid
             ? "border-red-500 focus:outline-red-300"
             : "border-slate-600 focus:outline-blue-300"
-        } ${disabled ? "cursor-not-allowed bg-slate-800 text-slate-600" : "text-white"}`}
+        } ${disabled ? "cursor-not-allowed bg-slate-800 text-slate-600" : "text-white bg-slate-800"}`}
       >
         {IconStart && <div><IconStart className="w-4 h-4" /></div>}
         <input
