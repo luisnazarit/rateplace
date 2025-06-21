@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import LogOut from "../../components/LogOut";
 import { Bell } from "lucide-react";
+import { Avatar } from "@/components/commons/ui/Avatar";
 
 export default async function CompanyHeader() {
   const session = await auth();
@@ -15,18 +16,7 @@ export default async function CompanyHeader() {
           </button>
           {user && (
             <div className="flex items-center space-x-3">
-              {typeof (user as any)?.image === "string" &&
-              (user as any)?.image ? (
-                <img
-                  src={(user as any).image}
-                  alt="Avatar"
-                  className="w-8 h-8 rounded-full"
-                />
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center text-xs font-bold text-gray-600">
-                  {user.name}
-                </div>
-              )}
+              <Avatar name={user.name} src={user.image || ""} />
               <div className="flex flex-col items-start">
                 <span className="text-sm font-medium">{user.name}</span>
                 <span className="text-xs text-gray-500">{user.email}</span>

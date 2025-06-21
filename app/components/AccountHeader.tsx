@@ -3,7 +3,7 @@ import LoggedItem from "@/components/LoggedItem";
 import MainMenu from "@/components/MainMenu";
 import Link from "next/link";
 
-export default async function Header() {
+export default async function AccountHeader() {
   const session = await auth();
 
   return (

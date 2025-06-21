@@ -1,7 +1,7 @@
+import React from "react";
 import AccountHeader from "../components/AccountHeader";
-import { Header } from "./Header";
 
-export default function AccountLayout({
+export default async function AccountLayout({
   children,
 }: {
   children: React.ReactNode;

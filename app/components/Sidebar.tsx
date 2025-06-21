@@ -14,6 +14,7 @@ import {
   X,
   Home,
 } from 'lucide-react';
+import { BusinessAccount } from '@prisma/client';
 
 const menuItems = [
   {
@@ -53,7 +54,10 @@ const menuItems = [
   },
 ];
 
-export default function Sidebar() {
+export default function Sidebar({
+  account
+}: {
+  account: BusinessAccount}) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const pathname = usePathname();
 
@@ -63,16 +67,15 @@ export default function Sidebar() {
       <aside
         className={`fixed top-0 left-0 z-40 h-screen transition-transform ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        } bg-white border-r border-gray-200 w-64`}
+        } bg-gray-850 border-r border-gray-800 w-64`}
       >
-        <div className="flex items-center justify-between h-16 px-4 border-b border-gray-200">
+        <div className="flex items-center justify-between h-16 px-4 border-b border-slate-800">
           <Link href="/company" className="flex items-center space-x-2">
-            <img src="/logo.png" alt="Logo" className="w-8 h-8" />
-            <span className="text-xl font-semibold">Panel Empresa</span>
+            <img src={account.logo || 'logo.png'} alt="Logo" className="w-8 h-8" />
           </Link>
           <button
             onClick={() => setIsSidebarOpen(false)}
-            className="p-2 rounded-lg hover:bg-gray-100 lg:hidden"
+            className="p-2 rounded-lg hover:bg-slate-800 lg:hidden"
           >
             <X className="w-6 h-6" />
           </button>

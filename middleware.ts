@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "@/auth";
-import { prisma } from "@/lib/prisma";
 
 export async function middleware(request: NextRequest) {
   const session = await auth();
@@ -28,39 +27,9 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(url);
     }
 
-    // Obtener el subdominio del host
-    const hostname = request.headers.get("host") || "";
-    const subdomain = hostname.split(".")[0];
-
-    // Verificar si el usuario tiene acceso a la cuenta de negocio
-    const accountRole = await prisma.accountRole.findFirst({
-      where: {
-        userId: session.user.id,
-        account: {
-          slug: subdomain,
-        },
-      },
-      include: {
-        account: true,
-        role: true,
-      },
-    });
-
-    // Si el usuario no tiene acceso a la cuenta, redirigir al dashboard principal
-    if (!accountRole) {
-      return NextResponse.redirect(new URL("/login", request.url));
-    }
-
-    // Agregar información de la cuenta y el rol a los headers
-    const requestHeaders = new Headers(request.headers);
-    requestHeaders.set("x-business-account", accountRole.account.id);
-    requestHeaders.set("x-user-role", accountRole.role.name);
-
-    return NextResponse.next({
-      request: {
-        headers: requestHeaders,
-      },
-    });
+    // La verificación de acceso a la cuenta de negocio se hará en los componentes de página
+    // donde Prisma puede ejecutarse correctamente
+    return NextResponse.next();
   }
 
   return NextResponse.next();

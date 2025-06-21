@@ -23,16 +23,15 @@ export const getCurrentSubdomain = (): string => {
       return `${parts[0]}.`;
     }
 
-
     // Si no hay subdominio, devolver el dominio principal
     return hostname;
   }
 
   // En el servidor, usar la variable de entorno o localhost
-  return ""
+  return "";
 };
+
 
 export const host = getCurrentSubdomain();
 
 export const API_URL = `http://${host}${process.env.NEXT_PUBLIC_API_URL}`;
-

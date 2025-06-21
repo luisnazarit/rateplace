@@ -152,14 +152,14 @@ model Permission {
 model Product {
   id          String          @id @default(cuid())
   name        String
-  slug        String          @unique
+  slug        String
   description String          @db.Text
   price       Float
   stock       Int
   enabled     Boolean         @default(true)
   images      Image[]
-  category    Category        @relation(fields: [categoryId], references: [id])
-  categoryId  String
+  category    Category?        @relation(fields: [categoryId], references: [id])
+  categoryId  String?
   account     BusinessAccount @relation(fields: [accountId], references: [id])
   accountId   String
   variants    Variant[]
@@ -168,20 +168,22 @@ model Product {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
+  @@unique([slug, accountId])
   @@index([categoryId])
   @@index([accountId])
 }
 
 model Variant {
-  id        String   @id @default(cuid())
+  id        String         @id @default(cuid())
   name      String
   price     Float
   stock     Int
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId String
   options   Option[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  images    VariantImage[] // Imágenes específicas de esta variante
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
   @@index([productId])
 }
@@ -201,7 +203,7 @@ model Option {
 model Category {
   id          String          @id @default(cuid())
   name        String
-  slug        String          @unique
+  slug        String
   description String?         @db.Text
   products    Product[]
   parent      Category?       @relation("SubCategories", fields: [parentId], references: [id])
@@ -212,6 +214,7 @@ model Category {
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
+  @@unique([slug, accountId])
   @@index([parentId])
   @@index([accountId])
 }
@@ -420,4 +423,17 @@ enum ShippingStatus {
   SHIPPED
   DELIVERED
   CANCELLED
+}
+
+// Variant Images Model
+model VariantImage {
+  id        String   @id @default(cuid())
+  url       String
+  alt       String?
+  variant   Variant  @relation(fields: [variantId], references: [id], onDelete: Cascade)
+  variantId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([variantId])
 }
