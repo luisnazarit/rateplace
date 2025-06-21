@@ -16,6 +16,7 @@
   background-color: transparent;
   white-space: nowrap;
   line-height: 1.67;
+  color: var(--color-white);
 }
 
 /* Disabled state */
@@ -27,7 +28,6 @@
 /* Estilos para las variantes "solid" */
 .custom-button.primary {
   background: var(--color-primary-500);
-  color: var(--color-white);
 }
 
 .custom-button.primary:hover {
@@ -103,13 +103,11 @@
 }
 
 .custom-button.secondary.outlined {
-  border-color: var(--color-secondary-500);
-  color: var(--color-secondary-500);
+  border-color: var(--color-secondary-200);
 }
 
 .custom-button.secondary.outlined:hover {
-  border-color: var(--color-secondary-400);
-  color: var(--color-secondary-500);
+  border-color: var(--color-secondary-200);
 }
 
 .custom-button.error.outlined {

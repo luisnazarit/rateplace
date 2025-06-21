@@ -3,16 +3,18 @@ import ProductsTable from "./ProductsTable";
 import { prisma } from "@/lib/prisma";
 import { getCurrentTenant } from "@/lib/getTenant";
 import TextField from "@/components/commons/TextField";
+import ActiveFiltersBar from "./ActiveFiltersBar";
 
 type ProductsPageProps = {
   searchParams?: Promise<Record<string, string>>;
-}
+};
 
 export default async function ProductsPage({
   searchParams,
 }: ProductsPageProps) {
   const currentPage = (await searchParams)?.page || "1";
   const search = (await searchParams)?.search || "";
+  const category = (await searchParams)?.category || "";
   const limit = (await searchParams)?.limit || "10";
 
   const products = await prisma.product.findMany({
@@ -39,11 +41,10 @@ export default async function ProductsPage({
     },
   });
 
-
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h1 >Productos</h1>
+        <h1>Productos</h1>
         <Link
           href="/company/products/new"
           className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
@@ -65,6 +66,11 @@ export default async function ProductsPage({
         </Link>
       </div>
 
+      <ActiveFiltersBar
+        filters={{ search, category, limit }}
+        basePath={"/company/products"}
+      />
+
       <div className="bg-gray-800 p-4 rounded-lg">
         <form action="/company/products" method="get">
           <TextField
@@ -77,47 +83,43 @@ export default async function ProductsPage({
         </form>
       </div>
 
-      <ProductsTable
-        products={products}
-      />
+      <ProductsTable products={products} />
 
-      <nav
-        className="bg-gray-800 p-4 rounded-lg"
-        aria-label="Pagination"
-      >
+      <nav className="bg-gray-800 p-4 rounded-lg flex gap-2" aria-label="Pagination">
         {currentPage !== "1" && (
           <Link
-            href={`?page=${Number(currentPage) - 1}&search=${search}&limit=${limit}`}
-            className="relative inline-flex items-center px-4 py-2   text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            href={`?page=${
+              Number(currentPage) - 1
+            }&search=${search}&limit=${limit}`}
+            className="relative items-center px-4 py-2 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
           >
             Anterior
           </Link>
         )}
 
-        {
-          Array.from({ length: Math.ceil(meta / Number(limit)) }).map((_, i) => (
-            <Link
-              key={i}
-              href={`?page=${i + 1}&search=${search}&limit=${limit}`}
-              className={`relative inline-flex items-center px-4 py-2  text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 ${
-                Number(currentPage) === i + 1 && "bg-blue-600 text-white"
-              }`}
-            >
-              {i + 1}
-            </Link>
-          ))
-        }
+        {Array.from({ length: Math.ceil(meta / Number(limit)) }).map((_, i) => (
+          <Link
+            key={i}
+            href={`?page=${i + 1}&search=${search}&limit=${limit}`}
+            className={`relative items-center px-4 py-2  text-sm font-medium rounded-md   hover:bg-gray-50 ${
+              Number(currentPage) === i + 1 ? "bg-blue-600 text-white" : "text-gray-700 bg-white"
+            }`}
+          >
+            {i + 1}
+          </Link>
+        ))}
 
         {Number(currentPage) * Number(limit) < meta && (
           <Link
-            href={`?page=${Number(currentPage) + 1}&search=${search}&limit=${limit}`}
-            className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
+            href={`?page=${
+              Number(currentPage) + 1
+            }&search=${search}&limit=${limit}`}
+            className="relative items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"
           >
             Siguiente
           </Link>
         )}
       </nav>
-
     </div>
   );
 }

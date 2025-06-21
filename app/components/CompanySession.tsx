@@ -1,14 +1,15 @@
 import { auth } from "@/auth";
 import LogOut from "../../components/LogOut";
-import { Bell } from "lucide-react";
+import { Bell, DotSquare } from "lucide-react";
 import { Avatar } from "@/components/commons/ui/Avatar";
+import { Dropdown } from "@/components/commons/Dropdown";
 
-export default async function CompanyHeader() {
+export default async function CompanySession() {
   const session = await auth();
   const user = session?.user;
 
   return (
-    <header className="border-b border-gray-800">
+    <div className="border-t border-gray-800">
       <div className="flex items-center justify-end h-16 px-4">
         <div className="flex items-center space-x-4">
           <button className="p-2 rounded-lg hover:bg-gray-100">
@@ -16,16 +17,18 @@ export default async function CompanyHeader() {
           </button>
           {user && (
             <div className="flex items-center space-x-3">
-              <Avatar name={user.name} src={user.image || ""} />
+              <Avatar size="sm" name={user.name} src={user.image || ""} />
               <div className="flex flex-col items-start">
                 <span className="text-sm font-medium">{user.name}</span>
                 <span className="text-xs text-gray-500">{user.email}</span>
               </div>
-              <LogOut />
+              <Dropdown buttonLabel={<DotSquare className="w-6 h-6" />}>
+                <LogOut />
+              </Dropdown>
             </div>
           )}
         </div>
       </div>
-    </header>
+    </div>
   );
 }

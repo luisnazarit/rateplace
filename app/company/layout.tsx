@@ -1,5 +1,4 @@
 import Sidebar from "../components/Sidebar";
-import CompanyHeader from "../components/CompanyHeader";
 import { getCurrentUserRole, getCurrentAccount } from "@/lib/getTenant";
 import { redirect } from "next/navigation";
 
@@ -19,11 +18,10 @@ export default async function CompanyLayout({
 
   return (
     <div className="min-h-screen">
-      <Sidebar account={account} />
+      <Sidebar />
 
       {/* Main Content */}
       <div className="lg:ml-64">
-        <CompanyHeader />
         <main className="p-6">{children}</main>
       </div>
     </div>
